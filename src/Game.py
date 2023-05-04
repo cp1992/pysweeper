@@ -39,6 +39,7 @@ class Game:
                 tileWidget = ttk.Label(frame, image=tileImg)
                 tileWidget.bind("<Button-1>", lambda _, x=x,
                                 y=y: self.tile_clicked(x, y))
+                tileWidget.bind("<Button-2>", lambda _, x=x, y=y: self.tile_right_clicked(x, y))
                 tileWidget.grid(column=x, row=y)
                 col.append(Tile(coordinates=(x, y),
                                 widget=tileWidget))
@@ -154,6 +155,9 @@ class Game:
                     while empty_tiles:
                         empty_tiles += self.check_adjacent_tiles(
                             empty_tiles.pop(), self.tiles, visited_tiles)
+
+    def tile_right_clicked(self, x, y):
+        self.tiles[x][y].set_image("assets/tileFlag.png")
 
     def show_game_status(self, status):
         self.gameStatusText.config(text=status)
