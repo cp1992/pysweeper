@@ -17,8 +17,6 @@ class Tile:
         x = self.coordinates[0] - 1
         y = self.coordinates[1] - 1
 
-        # print(f"getting tile above left {x}, {y}")
-
         if x >= 0 and y >= 0:
             return tiles[x][y]
         else:
@@ -27,8 +25,6 @@ class Tile:
     def get_tile_above(self, tiles):
         x = self.coordinates[0]
         y = self.coordinates[1] - 1
-
-        # print(f"getting tile above {x}, {y}")
 
         if y >= 0:
             return tiles[x][y]
@@ -39,8 +35,6 @@ class Tile:
         x = self.coordinates[0] + 1
         y = self.coordinates[1] - 1
 
-        # print(f"getting tile above right {x}, {y}")
-
         if x <= len(tiles) - 1 and y >= 0:
             return tiles[x][y]
         else:
@@ -49,8 +43,6 @@ class Tile:
     def get_tile_right(self, tiles):
         x = self.coordinates[0] + 1
         y = self.coordinates[1]
-
-        # print(f"getting tile right {x}, {y}")
 
         if x <= len(tiles) - 1:
             return tiles[x][y]
@@ -61,8 +53,6 @@ class Tile:
         x = self.coordinates[0] + 1
         y = self.coordinates[1] + 1
 
-        # print(f"getting tile below righ {x}, {y}")
-
         if x <= len(tiles) - 1 and y <= len(tiles) - 1:
             return tiles[x][y]
         else:
@@ -71,8 +61,6 @@ class Tile:
     def get_tile_below(self, tiles):
         x = self.coordinates[0]
         y = self.coordinates[1] + 1
-
-        # print(f"getting tile below {x}, {y}")
 
         if y <= len(tiles) - 1:
             return tiles[x][y]
@@ -83,8 +71,6 @@ class Tile:
         x = self.coordinates[0] - 1
         y = self.coordinates[1] + 1
 
-        # print(f"getting tile below left {x}, {y}")
-
         if x >= 0 and y <= len(tiles) - 1:
             return tiles[x][y]
         else:
@@ -93,8 +79,6 @@ class Tile:
     def get_tile_left(self, tiles):
         x = self.coordinates[0] - 1
         y = self.coordinates[1]
-
-        # print(f"getting tile left {x}, {y}")
 
         if x >= 0:
             return tiles[x][y]
