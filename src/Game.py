@@ -1,9 +1,9 @@
 import tkinter as tk
 from tkinter import ttk
-import random
 
 from utils import flatten
 from Tile import Tile
+
 
 class Game:
 
@@ -11,7 +11,7 @@ class Game:
     size = 10
     lost_game = False
     tiles = []
-    
+
     # widgets
     root = None
     gameStatusText = None
@@ -20,10 +20,6 @@ class Game:
     def __init__(self, root):
         self.root = root
 
-    # 10% chance of bomb
-    def generate_bomb(self):
-        return random.randint(0, 9) == 0
-    
     def start_game(self):
         # restart
         if self.lost_game:
@@ -45,21 +41,21 @@ class Game:
                                 y=y: self.tile_clicked(x, y))
                 tileWidget.grid(column=x, row=y)
                 col.append(Tile(coordinates=(x, y),
-                        widget=tileWidget, bomb=self.generate_bomb()))
+                                widget=tileWidget))
             self.tiles.append(col)
 
         frame.place(relx=.5, rely=.5, anchor="center")
 
         # create and game status text and new game button which will be added to a frame object
         self.gameStatusFrame = ttk.Frame(self.root)
-        self.gameStatusText = ttk.Label(self.gameStatusFrame, text="Lost Game!")
-        self.newGameButton = ttk.Button(self.gameStatusFrame, text="New Game", command=self.new_game_clicked)
+        self.gameStatusText = ttk.Label(
+            self.gameStatusFrame, text="Lost Game!")
+        self.newGameButton = ttk.Button(
+            self.gameStatusFrame, text="New Game", command=self.new_game_clicked)
         self.gameStatusFrame.place(relx=.5, rely=.8, anchor="center")
-        
+
         self.root.mainloop()
 
-    
-                        
     # visit nearby tiles and set count on each
     # if nearby tile is an empty tile, and tile has not been visited, return it
     def check_adjacent_tiles(self, tile, tiles, visited_tiles=[]):
@@ -134,10 +130,10 @@ class Game:
         # reset tiles
         for tile in flatten(self.tiles):
             tile.set_image("assets/tile.png")
-            tile.bomb = self.generate_bomb()
+            tile.generate_bomb()
 
         self.lost_game = False
-    
+
     def tile_clicked(self, x, y):
         if (not self.lost_game):
             tile = self.tiles[x][y]
@@ -153,20 +149,17 @@ class Game:
                     # if the tile is empty, add to emptyTiles list
                     # iterate through list, with same logic (set thir image, get empty tiles)
                     visited_tiles = []
-                    empty_tiles = self.check_adjacent_tiles(tile, self.tiles, visited_tiles)
+                    empty_tiles = self.check_adjacent_tiles(
+                        tile, self.tiles, visited_tiles)
                     while empty_tiles:
                         empty_tiles += self.check_adjacent_tiles(
                             empty_tiles.pop(), self.tiles, visited_tiles)
-                        
+
     def show_game_status(self, status):
-        self.gameStatusText.config(text = status)
+        self.gameStatusText.config(text=status)
         self.gameStatusText.pack()
         self.newGameButton.pack()
 
     def hide_game_status(self):
         self.gameStatusText.pack_forget()
         self.newGameButton.pack_forget()
-                
-
-
-

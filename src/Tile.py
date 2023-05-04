@@ -1,17 +1,22 @@
 from tkinter import PhotoImage
+import random
 
 class Tile:
 
-    def __init__(self, coordinates, widget, bomb=False):
+    def __init__(self, coordinates, widget):
         self.coordinates = coordinates
         self.widget = widget
-        self.bomb = bomb
+        self.generate_bomb()
 
     def __repr__(self):
         return self.__str__()
 
     def __str__(self):
         return str({"coordinates": self.coordinates, "widget": self.widget, "bomb": self.bomb})
+    
+    # 10% chance of bomb
+    def generate_bomb(self):
+        self.bomb = random.randint(0, 9) == 0
     
     def get_tile_above_left(self, tiles):
         x = self.coordinates[0] - 1
