@@ -4,33 +4,33 @@ from tkinter import ttk
 from utils import flatten
 from Tile import Tile
 
-
 class Game:
 
     # game data
-    size = 10
-    lost_game = False
+    size = 5
+    disable_input = False
     tiles = []
+    bomb_count = 0
 
     # widgets
     root = None
-    gameStatusText = None
-    newGameButton = None
+    game_status_text = None
+    new_game_button = None
 
     def __init__(self, root):
         self.root = root
 
     def start_game(self):
         # restart
-        if self.lost_game:
-            self.lost_game = False
+        if self.disable_input:
+            self.disable_input = False
 
         ## build board ##
 
         # create tiles
         frame = ttk.Frame(self.root)
-        frame.columnconfigure(10)
-        frame.rowconfigure(10)
+        frame.columnconfigure(self.size)
+        frame.rowconfigure(self.size)
 
         tileImg = tk.PhotoImage(file="assets/tile.png")
         for x in range(0, self.size):
@@ -41,17 +41,19 @@ class Game:
                                 y=y: self.tile_clicked(x, y))
                 tileWidget.bind("<Button-2>", lambda _, x=x, y=y: self.tile_right_clicked(x, y))
                 tileWidget.grid(column=x, row=y)
-                col.append(Tile(coordinates=(x, y),
-                                widget=tileWidget))
+                tile = Tile(coordinates=(x, y),
+                                widget=tileWidget)
+                self.bomb_count += tile.bomb # TODO: find more elegant way to accomplish this (refactor into create_tile method?)
+                col.append(tile)
             self.tiles.append(col)
 
         frame.place(relx=.5, rely=.5, anchor="center")
 
         # create and game status text and new game button which will be added to a frame object
         self.gameStatusFrame = ttk.Frame(self.root)
-        self.gameStatusText = ttk.Label(
+        self.game_status_text = ttk.Label(
             self.gameStatusFrame, text="Lost Game!")
-        self.newGameButton = ttk.Button(
+        self.new_game_button = ttk.Button(
             self.gameStatusFrame, text="New Game", command=self.new_game_clicked)
         self.gameStatusFrame.place(relx=.5, rely=.8, anchor="center")
 
@@ -109,13 +111,15 @@ class Game:
         count = tile.get_adjacent_bomb_count(tiles)
         if count == 0:
             tile.set_image("assets/tileSafe.png")
+            tile.unrevealed = False
             return tile not in visited_tiles
 
         tile.set_image(f"assets/tile{count}.png")
+        tile.unrevealed = False
         return False
 
     def lose_game(self, clicked_tile, tiles):
-        self.lost_game = True
+        self.disable_input = True
 
         self.show_game_status('Lost game!')
         # go through tiles and show bombs
@@ -125,18 +129,33 @@ class Game:
             elif tile.bomb:
                 tile.set_image("assets/tileBomb.png")
 
+    def win_game(self):
+        self.show_game_status('Won game!')
+        self.disable_input = True
+
+
+    def check_for_win_condition(self, tile, tiles):
+        # get number of bombs
+        # check number of unrevealed tiles
+        # if unrevealed tiles == bombs
+        # then win
+        print(f"Bomb count => {self.bomb_count}, unrevealed tiles => {tile.get_unrevealed_tiles(tiles)}")
+        if self.bomb_count == tile.get_unrevealed_tiles(tiles):
+            self.win_game()
+
     def new_game_clicked(self):
         self.hide_game_status()
+        self.reset_game()
 
         # reset tiles
         for tile in flatten(self.tiles):
-            tile.set_image("assets/tile.png")
-            tile.generate_bomb()
+            tile.reset()
+            self.bomb_count += tile.bomb
 
-        self.lost_game = False
+        self.disable_input = False
 
     def tile_clicked(self, x, y):
-        if (not self.lost_game):
+        if (not self.disable_input):
             tile = self.tiles[x][y]
             if (tile.bomb):
                 self.lose_game(tile, self.tiles)
@@ -144,8 +163,10 @@ class Game:
                 count = tile.get_adjacent_bomb_count(self.tiles)
                 if count > 0:
                     tile.set_image(f"assets/tile{count}.png")
+                    tile.unrevealed = False
                 else:
                     tile.set_image("assets/tileSafe.png")
+                    tile.unrevealed = False
                     # visit nearby tiles, and set their image if they have adjacent bombs
                     # if the tile is empty, add to emptyTiles list
                     # iterate through list, with same logic (set thir image, get empty tiles)
@@ -155,15 +176,20 @@ class Game:
                     while empty_tiles:
                         empty_tiles += self.check_adjacent_tiles(
                             empty_tiles.pop(), self.tiles, visited_tiles)
+                        
+            self.check_for_win_condition(tile, self.tiles)
 
     def tile_right_clicked(self, x, y):
         self.tiles[x][y].set_image("assets/tileFlag.png")
 
     def show_game_status(self, status):
-        self.gameStatusText.config(text=status)
-        self.gameStatusText.pack()
-        self.newGameButton.pack()
+        self.game_status_text.config(text=status)
+        self.game_status_text.pack()
+        self.new_game_button.pack()
 
     def hide_game_status(self):
-        self.gameStatusText.pack_forget()
-        self.newGameButton.pack_forget()
+        self.game_status_text.pack_forget()
+        self.new_game_button.pack_forget()
+
+    def reset_game(self):
+        self.bomb_count = 0
