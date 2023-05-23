@@ -1,7 +1,11 @@
 from tkinter import PhotoImage
 import random
 
+from utils import flatten
+
 class Tile:
+
+    unrevealed = True
 
     def __init__(self, coordinates, widget):
         self.coordinates = coordinates
@@ -126,6 +130,18 @@ class Tile:
             count = count + 1
 
         return count
+    
+    def get_unrevealed_tiles(self, tiles):
+        count = 0
+        for tile in flatten(tiles):
+            if tile.unrevealed:
+                count += 1
+        return count
+    
+    def reset(self): 
+        self.unrevealed = True
+        self.set_image("assets/tile.png")
+        self.generate_bomb()
     
     def set_image(self, image_path):
         image = PhotoImage(file=image_path)
