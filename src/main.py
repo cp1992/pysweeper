@@ -1,3 +1,12 @@
+# TODO: Would like to split game into Model-View-Controller
+# Model/Controller 
+#   - Game: stores all information/functionality needed by the game
+#   - Tile: stores all information/functionality for tile
+# View
+#   - main: initial creation of UI, setups root
+#   - Board: creates UI for representing game   
+
+
 import tkinter as tk
 
 from Game import Game
@@ -27,5 +36,6 @@ root.geometry(
 root.resizable(False, False)
 root.title("pysweeper")
 
+# TODO: should all GUI setup logic go here? Then pass relevant 
 game = Game(root)
 game.start_game()

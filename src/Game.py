@@ -4,6 +4,7 @@ from tkinter import ttk
 from utils import flatten
 from Tile import Tile
 
+# TODO: does this have to be a class? Can we convert it to script w/exported functions
 class Game:
 
     # game data
@@ -21,12 +22,10 @@ class Game:
         self.root = root
 
     def start_game(self):
-        # restart
-        if self.disable_input:
-            self.disable_input = False
-
+        self.disable_input = False
         ## build board ##
 
+        # TODO: move into board object/build_board function
         # create tiles
         frame = ttk.Frame(self.root)
         frame.columnconfigure(self.size)
@@ -101,6 +100,7 @@ class Game:
 
         return empty_tiles
 
+    # TODO: move to board
     # check tile
     # if bombs are nearby set the tile image and return false
     # otherwise tile is empty, check if tile not visited and return True
@@ -132,7 +132,6 @@ class Game:
     def win_game(self):
         self.show_game_status('Won game!')
         self.disable_input = True
-
 
     def check_for_win_condition(self, tile, tiles):
         # get number of bombs
