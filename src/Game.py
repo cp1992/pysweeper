@@ -5,6 +5,8 @@ from utils import flatten
 from Tile import Tile
 
 # TODO: does this have to be a class? Can we convert it to script w/exported functions
+
+
 class Game:
 
     # game data
@@ -38,11 +40,13 @@ class Game:
                 tileWidget = ttk.Label(frame, image=tileImg)
                 tileWidget.bind("<Button-1>", lambda _, x=x,
                                 y=y: self.tile_clicked(x, y))
-                tileWidget.bind("<Button-2>", lambda _, x=x, y=y: self.tile_right_clicked(x, y))
+                tileWidget.bind("<Button-2>", lambda _, x=x,
+                                y=y: self.tile_right_clicked(x, y))
                 tileWidget.grid(column=x, row=y)
                 tile = Tile(coordinates=(x, y),
-                                widget=tileWidget)
-                self.bomb_count += tile.bomb # TODO: find more elegant way to accomplish this (refactor into create_tile method?)
+                            widget=tileWidget)
+                # TODO: find more elegant way to accomplish this (refactor into create_tile method?)
+                self.bomb_count += tile.bomb
                 col.append(tile)
             self.tiles.append(col)
 
@@ -58,6 +62,7 @@ class Game:
 
         self.root.mainloop()
 
+    # TODO: move to TileService
     # visit nearby tiles and set count on each
     # if nearby tile is an empty tile, and tile has not been visited, return it
     def check_adjacent_tiles(self, tile, tiles, visited_tiles=[]):
@@ -138,7 +143,8 @@ class Game:
         # check number of unrevealed tiles
         # if unrevealed tiles == bombs
         # then win
-        print(f"Bomb count => {self.bomb_count}, unrevealed tiles => {tile.get_unrevealed_tiles(tiles)}")
+        print(
+            f"Bomb count => {self.bomb_count}, unrevealed tiles => {tile.get_unrevealed_tiles(tiles)}")
         if self.bomb_count == tile.get_unrevealed_tiles(tiles):
             self.win_game()
 
@@ -175,7 +181,7 @@ class Game:
                     while empty_tiles:
                         empty_tiles += self.check_adjacent_tiles(
                             empty_tiles.pop(), self.tiles, visited_tiles)
-                        
+
             self.check_for_win_condition(tile, self.tiles)
 
     def tile_right_clicked(self, x, y):

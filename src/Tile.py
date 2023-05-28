@@ -131,13 +131,6 @@ class Tile:
 
         return count
     
-    def get_unrevealed_tiles(self, tiles):
-        count = 0
-        for tile in flatten(tiles):
-            if tile.unrevealed:
-                count += 1
-        return count
-    
     def reset(self): 
         self.unrevealed = True
         self.set_image("assets/tile.png")
