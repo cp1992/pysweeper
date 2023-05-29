@@ -26,11 +26,11 @@ class GamePresenter():
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
         self.game_view.create_game_status_frame(self.new_game_clicked)
-        self.game_view.root.mainloop()
 
     def start_game(self):
         self.disable_input = False
         self.bomb_count = self.tiles_service.get_bomb_tiles_count(self.tiles)
+        self.game_view.root.mainloop()
 
     def win_game(self):
         self.disable_input = True
