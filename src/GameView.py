@@ -15,9 +15,6 @@ class GameView:
     new_game_button = None
     bomb_count_text = None
 
-    def __init__(self):
-        self.bomb_count_text = None
-
     def __get_center(self, root, window_width, window_height):
         screen_width = root.winfo_screenwidth()
         screen_height = root.winfo_screenheight()
