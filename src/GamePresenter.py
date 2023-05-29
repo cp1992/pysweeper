@@ -12,7 +12,7 @@ class GamePresenter():
 
     # game logic
     tiles = []
-    bomb_count = 12 # 12% of tiles are bombs with size = 10
+    bomb_count = 12  # 12% of tiles are bombs with size = 10
     disable_input = False
 
     def __init__(self, game_view):
@@ -25,7 +25,8 @@ class GamePresenter():
         self.game_view.create_window()
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
-        self.game_view.create_game_status_frame(self.bomb_count, self.new_game_clicked)
+        self.game_view.create_game_status_frame(
+            self.bomb_count, self.new_game_clicked)
 
     def start_game(self):
         self.disable_input = False
@@ -62,9 +63,9 @@ class GamePresenter():
         for tile in flatten(self.tiles):
             tile.reset()
 
-        # regenerate bombs    
+        # regenerate bombs
         self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
-        
+
         # re-enable input
         self.disable_input = False
 
