@@ -62,9 +62,12 @@ class GameView:
 
         return tiles
 
-    def create_game_status_frame(self, new_game_clicked_listener):
-        # create and game status text and new game button which will be added to a frame object
+    def create_game_status_frame(self, bomb_count, new_game_clicked_listener):
+        # create bomb count, game status text (win/lose), and new game button which will be added to a frame object
         game_status_frame = ttk.Frame(self.root)
+        self.bomb_count_text = ttk.Label(game_status_frame, text=f"Bombs: {bomb_count}")
+        self.bomb_count_text.pack()
+
         self.game_status_text = ttk.Label(
             game_status_frame, text="Lost Game!")
         self.new_game_button = ttk.Button(

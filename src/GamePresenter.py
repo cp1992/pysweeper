@@ -12,7 +12,7 @@ class GamePresenter():
 
     # game logic
     tiles = []
-    bomb_count = 0
+    bomb_count = 12 # 12% of tiles are bombs with size = 10
     disable_input = False
 
     def __init__(self, game_view):
@@ -25,11 +25,11 @@ class GamePresenter():
         self.game_view.create_window()
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
-        self.game_view.create_game_status_frame(self.new_game_clicked)
+        self.game_view.create_game_status_frame(self.bomb_count, self.new_game_clicked)
 
     def start_game(self):
         self.disable_input = False
-        self.bomb_count = self.tiles_service.get_bomb_tiles_count(self.tiles)
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
         self.game_view.root.mainloop()
 
     def win_game(self):
@@ -58,13 +58,14 @@ class GamePresenter():
             self.win_game()
 
     def reset_game(self):
-        self.bomb_count = 0
-
         # reset tiles
         for tile in flatten(self.tiles):
             tile.reset()
-            self.bomb_count += tile.bomb
 
+        # regenerate bombs    
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
+        
+        # re-enable input
         self.disable_input = False
 
     # visit nearby tiles and set count on each
