@@ -1,6 +1,7 @@
 from utils import flatten
 
 from Tile import Tile
+from TileService import TileService
 from TilesService import TilesService
 
 class GamePresenter():
@@ -16,6 +17,7 @@ class GamePresenter():
     def __init__(self, game_view):
         self.game_view = game_view
         self.tiles_service = TilesService()
+        self.tile_service = TileService()
         self.__create_ui()
 
     def __create_ui(self):
@@ -55,42 +57,41 @@ class GamePresenter():
     def reset_game(self):
         self.bomb_count = 0
 
-    # TODO: move to TileService
     # visit nearby tiles and set count on each
     # if nearby tile is an empty tile, and tile has not been visited, return it
     def check_adjacent_tiles(self, tile, tiles, visited_tiles=[]):
 
         empty_tiles = []
 
-        tile_above_left = tile.get_tile_above_left(tiles)
+        tile_above_left = self.tile_service.get_tile_above_left(tile, tiles)
         if self.check_tile(tile_above_left, tiles, visited_tiles):
             empty_tiles.append(tile_above_left)
 
-        tile_above = tile.get_tile_above(tiles)
+        tile_above = self.tile_service.get_tile_above(tile, tiles)
         if self.check_tile(tile_above, tiles, visited_tiles):
             empty_tiles.append(tile_above)
 
-        tile_above_right = tile.get_tile_above_right(tiles)
+        tile_above_right = self.tile_service.get_tile_above_right(tile, tiles)
         if self.check_tile(tile_above_right, tiles, visited_tiles):
             empty_tiles.append(tile_above_right)
 
-        tile_right = tile.get_tile_right(tiles)
+        tile_right = self.tile_service.get_tile_right(tile, tiles)
         if self.check_tile(tile_right, tiles, visited_tiles):
             empty_tiles.append(tile_right)
 
-        tile_below_right = tile.get_tile_below_right(tiles)
+        tile_below_right = self.tile_service.get_tile_below_right(tile, tiles)
         if self.check_tile(tile_below_right, tiles, visited_tiles):
             empty_tiles.append(tile_below_right)
 
-        tile_below = tile.get_tile_below(tiles)
+        tile_below = self.tile_service.get_tile_below(tile, tiles)
         if self.check_tile(tile_below, tiles, visited_tiles):
             empty_tiles.append(tile_below)
 
-        tile_below_left = tile.get_tile_below_left(tiles)
+        tile_below_left = self.tile_service.get_tile_below_left(tile, tiles)
         if self.check_tile(tile_below_left, tiles, visited_tiles):
             empty_tiles.append(tile_below)
 
-        tile_left = tile.get_tile_left(tiles)
+        tile_left = self.tile_service.get_tile_left(tile, tiles)
         if self.check_tile(tile_left, tiles, visited_tiles):
             empty_tiles.append(tile_left)
 
@@ -98,7 +99,6 @@ class GamePresenter():
 
         return empty_tiles
 
-    # TODO: move to tile_service
     # check tile
     # if bombs are nearby set the tile image and return false
     # otherwise tile is empty, check if tile not visited and return True
@@ -106,7 +106,7 @@ class GamePresenter():
         if tile == None or tile.bomb:
             return False
 
-        count = tile.get_adjacent_bomb_count(tiles)
+        count = self.tile_service.get_adjacent_bomb_count(tile, tiles)
         if count == 0:
             tile.set_image("assets/tileSafe.png")
             tile.unrevealed = False
@@ -124,7 +124,7 @@ class GamePresenter():
             if (tile.bomb):
                 self.lose_game(tile, self.tiles)
             else:
-                count = tile.get_adjacent_bomb_count(self.tiles)
+                count = self.tile_service.get_adjacent_bomb_count(tile, self.tiles)
                 if count > 0:
                     tile.set_image(f"assets/tile{count}.png")
                     tile.unrevealed = False
@@ -144,7 +144,8 @@ class GamePresenter():
             self.check_for_win_condition(self.tiles)
 
     def tile_right_clicked(self, x, y):
-        self.tiles[x][y].set_image("assets/tileFlag.png")
+        if not self.disable_input:
+          self.tiles[x][y].set_image("assets/tileFlag.png")
 
     def new_game_clicked(self):
         self.game_view.hide_game_status()
