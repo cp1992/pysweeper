@@ -1,31 +1,19 @@
-import tkinter as tk
+# Uses MVP Architecture
+# Model
+#   - Tile
+#   - TileService
+#   - TilesService
+# View
+#   - GameView
+# Presenter
+#   - GamePresenter
 
-from Game import Game
-
-def get_center(root, window_width, window_height):
-    screen_width = root.winfo_screenwidth()
-    screen_height = root.winfo_screenheight()
-
-    center_x = int(screen_width / 2 - window_width / 2)
-    center_y = int(screen_height / 2 - window_height / 2)
-
-    return f'{center_x}+{center_y}'
+from GameView import GameView
+from GamePresenter import GamePresenter
 
 ##################
 ###### MAIN ######
 ##################
 
-root = tk.Tk()
-
-# set window height/width, position, and title
-window_width = 800
-window_height = 600
-center_coordinates = get_center(root, window_width, window_height)
-
-root.geometry(
-    f'{window_width}x{window_height}+{center_coordinates}')
-root.resizable(False, False)
-root.title("pysweeper")
-
-game = Game(root)
-game.start_game()
+game_presenter = GamePresenter(GameView())
+game_presenter.start_game()
