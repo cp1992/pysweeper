@@ -1,18 +1,17 @@
 from utils import flatten
 
-from Tile import Tile
 from TileService import TileService
 from TilesService import TilesService
 
 
-class GamePresenter():
+class GamePresenter:
 
     # constants
     size = 10
 
     # game logic
     tiles = []
-    bomb_count = 0
+    bomb_count = 12  # 12% of tiles are bombs with size = 10
     disable_input = False
 
     def __init__(self, game_view):
@@ -25,11 +24,12 @@ class GamePresenter():
         self.game_view.create_window()
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
-        self.game_view.create_game_status_frame(self.new_game_clicked)
+        self.game_view.create_game_status_frame(
+            self.bomb_count, self.new_game_clicked)
 
     def start_game(self):
         self.disable_input = False
-        self.bomb_count = self.tiles_service.get_bomb_tiles_count(self.tiles)
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
         self.game_view.root.mainloop()
 
     def win_game(self):
@@ -58,13 +58,14 @@ class GamePresenter():
             self.win_game()
 
     def reset_game(self):
-        self.bomb_count = 0
-
         # reset tiles
         for tile in flatten(self.tiles):
             tile.reset()
-            self.bomb_count += tile.bomb
 
+        # regenerate bombs
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
+
+        # re-enable input
         self.disable_input = False
 
     # visit nearby tiles and set count on each
@@ -113,7 +114,7 @@ class GamePresenter():
     # if bombs are nearby set the tile image and return false
     # otherwise tile is empty, check if tile not visited and return True
     def check_tile(self, tile, tiles, visited_tiles):
-        if tile == None or tile.bomb:
+        if tile is None or tile.bomb:
             return False
 
         count = self.tile_service.get_adjacent_bomb_count(tile, tiles)
@@ -129,9 +130,9 @@ class GamePresenter():
     ## Listeners ##
 
     def tile_clicked(self, x, y):
-        if (not self.disable_input):
+        if not self.disable_input:
             tile = self.tiles[x][y]
-            if (tile.bomb):
+            if tile.bomb:
                 self.lose_game(tile, self.tiles)
             else:
                 count = self.tile_service.get_adjacent_bomb_count(
@@ -144,7 +145,7 @@ class GamePresenter():
                     tile.unrevealed = False
                     # visit nearby tiles, and set their image if they have adjacent bombs
                     # if the tile is empty, add to emptyTiles list
-                    # iterate through list, with same logic (set thir image, get empty tiles)
+                    # iterate through list, with same logic (set their image, get empty tiles)
                     visited_tiles = []
                     empty_tiles = self.check_adjacent_tiles(
                         tile, self.tiles, visited_tiles)

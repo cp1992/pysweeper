@@ -5,7 +5,6 @@ from Tile import Tile
 
 
 class GameView:
-
     # constants
     window_width = 800
     window_height = 600
@@ -14,6 +13,7 @@ class GameView:
     root = None
     game_status_text = None
     new_game_button = None
+    bomb_count_text = None
 
     def __get_center(self, root, window_width, window_height):
         screen_width = root.winfo_screenwidth()
@@ -42,19 +42,19 @@ class GameView:
         frame.rowconfigure(size)
 
         tiles = []
-        tileImg = tk.PhotoImage(file="assets/tile.png")
+        tile_img = tk.PhotoImage(file="assets/tile.png")
         for x in range(0, size):
             col = []
             for y in range(0, size):
-                tileWidget = ttk.Label(frame, image=tileImg)
-                tileWidget.image = tileImg
-                tileWidget.bind("<Button-1>", lambda _, x=x,
-                                y=y: tile_clicked_listener(x, y))
-                tileWidget.bind("<Button-2>", lambda _, x=x,
-                                y=y: tile_right_clicked_listener(x, y))
-                tileWidget.grid(column=x, row=y)
+                tile_widget = ttk.Label(frame, image=tile_img)
+                tile_widget.image = tile_img
+                tile_widget.bind("<Button-1>", lambda _, x=x,
+                                                      y=y: tile_clicked_listener(x, y))
+                tile_widget.bind("<Button-2>", lambda _, x=x,
+                                                      y=y: tile_right_clicked_listener(x, y))
+                tile_widget.grid(column=x, row=y)
                 tile = Tile(coordinates=(x, y),
-                            widget=tileWidget)
+                            widget=tile_widget)
                 col.append(tile)
             tiles.append(col)
 
@@ -62,9 +62,13 @@ class GameView:
 
         return tiles
 
-    def create_game_status_frame(self, new_game_clicked_listener):
-        # create and game status text and new game button which will be added to a frame object
+    def create_game_status_frame(self, bomb_count, new_game_clicked_listener):
+        # create bomb count, game status text (win/lose), and new game button which will be added to a frame object
         game_status_frame = ttk.Frame(self.root)
+        self.bomb_count_text = ttk.Label(
+            game_status_frame, text=f"Bombs: {bomb_count}")
+        self.bomb_count_text.pack()
+
         self.game_status_text = ttk.Label(
             game_status_frame, text="Lost Game!")
         self.new_game_button = ttk.Button(
