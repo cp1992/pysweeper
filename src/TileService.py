@@ -1,5 +1,5 @@
 class TileService:
-    
+
     def get_tile_above_left(self, tile, tiles):
         x = tile.coordinates[0] - 1
         y = tile.coordinates[1] - 1
@@ -7,7 +7,7 @@ class TileService:
         if x >= 0 and y >= 0:
             return tiles[x][y]
         else:
-            return None    
+            return None
 
     def get_tile_above(self, tile, tiles):
         x = tile.coordinates[0]
@@ -26,7 +26,7 @@ class TileService:
             return tiles[x][y]
         else:
             return None
-        
+
     def get_tile_right(self, tile, tiles):
         x = tile.coordinates[0] + 1
         y = tile.coordinates[1]
@@ -35,7 +35,7 @@ class TileService:
             return tiles[x][y]
         else:
             return None
-        
+
     def get_tile_below_right(self, tile, tiles):
         x = tile.coordinates[0] + 1
         y = tile.coordinates[1] + 1
@@ -44,7 +44,7 @@ class TileService:
             return tiles[x][y]
         else:
             return None
-        
+
     def get_tile_below(self, tile, tiles):
         x = tile.coordinates[0]
         y = tile.coordinates[1] + 1
@@ -53,7 +53,7 @@ class TileService:
             return tiles[x][y]
         else:
             return None
-        
+
     def get_tile_below_left(self, tile, tiles):
         x = tile.coordinates[0] - 1
         y = tile.coordinates[1] + 1
@@ -90,7 +90,7 @@ class TileService:
         tile_right = self.get_tile_right(tile, tiles)
         if tile_right and tile_right.bomb:
             count = count + 1
-        
+
         tile_below_right = self.get_tile_below_right(tile, tiles)
         if tile_below_right and tile_below_right.bomb:
             count = count + 1

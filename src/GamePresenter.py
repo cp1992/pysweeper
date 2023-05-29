@@ -4,8 +4,9 @@ from Tile import Tile
 from TileService import TileService
 from TilesService import TilesService
 
+
 class GamePresenter():
-    
+
     # constants
     size = 10
 
@@ -13,7 +14,7 @@ class GamePresenter():
     tiles = []
     bomb_count = 0
     disable_input = False
-    
+
     def __init__(self, game_view):
         self.game_view = game_view
         self.tiles_service = TilesService()
@@ -21,14 +22,15 @@ class GamePresenter():
         self.__create_ui()
 
     def __create_ui(self):
-      self.game_view.create_window()
-      self.tiles = self.game_view.create_board(self.size, self.tile_clicked, self.tile_right_clicked)
-      self.game_view.create_game_status_frame(self.new_game_clicked)
-      self.game_view.root.mainloop()
-    
+        self.game_view.create_window()
+        self.tiles = self.game_view.create_board(
+            self.size, self.tile_clicked, self.tile_right_clicked)
+        self.game_view.create_game_status_frame(self.new_game_clicked)
+        self.game_view.root.mainloop()
+
     def start_game(self):
-       self.disable_input = False
-       self.bomb_count = self.tiles_service.get_bomb_tiles_count(self.tiles)
+        self.disable_input = False
+        self.bomb_count = self.tiles_service.get_bomb_tiles_count(self.tiles)
 
     def win_game(self):
         self.disable_input = True
@@ -50,7 +52,8 @@ class GamePresenter():
         # check number of unrevealed tiles
         # if unrevealed tiles == bombs
         # then win
-        print(f"Bomb count => {self.bomb_count}, unrevealed tiles => {self.tiles_service.get_unrevealed_tiles_count(tiles)}")
+        print(
+            f"Bomb count => {self.bomb_count}, unrevealed tiles => {self.tiles_service.get_unrevealed_tiles_count(tiles)}")
         if self.bomb_count == self.tiles_service.get_unrevealed_tiles_count(tiles):
             self.win_game()
 
@@ -124,7 +127,8 @@ class GamePresenter():
             if (tile.bomb):
                 self.lose_game(tile, self.tiles)
             else:
-                count = self.tile_service.get_adjacent_bomb_count(tile, self.tiles)
+                count = self.tile_service.get_adjacent_bomb_count(
+                    tile, self.tiles)
                 if count > 0:
                     tile.set_image(f"assets/tile{count}.png")
                     tile.unrevealed = False
@@ -140,12 +144,12 @@ class GamePresenter():
                     while empty_tiles:
                         empty_tiles += self.check_adjacent_tiles(
                             empty_tiles.pop(), self.tiles, visited_tiles)
-                        
+
             self.check_for_win_condition(self.tiles)
 
     def tile_right_clicked(self, x, y):
         if not self.disable_input:
-          self.tiles[x][y].set_image("assets/tileFlag.png")
+            self.tiles[x][y].set_image("assets/tileFlag.png")
 
     def new_game_clicked(self):
         self.game_view.hide_game_status()

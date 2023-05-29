@@ -1,5 +1,5 @@
 # TODO: Would like to split game into Model-View-Presenter
-# Model 
+# Model
 #   - Tile: stores all information/functionality for tile
 # View
 #   - main: initial creation of UI, setups root
