@@ -2,6 +2,7 @@ import random
 
 from utils import flatten
 
+
 class TilesService:
 
     def get_unrevealed_tiles_count(self, tiles):
@@ -10,10 +11,10 @@ class TilesService:
             if tile.unrevealed:
                 count += 1
         return count
-    
+
     def generate_bomb_tiles(self, tiles, bomb_count):
         bomb_tiles = []
-        while (len(bomb_tiles) < bomb_count):
+        while len(bomb_tiles) < bomb_count:
             x = random.randint(0, 9)
             y = random.randint(0, 9)
             bomb_tile = tiles[x][y]

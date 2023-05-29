@@ -1,7 +1,4 @@
 from tkinter import PhotoImage
-import random
-
-from utils import flatten
 
 
 class Tile:

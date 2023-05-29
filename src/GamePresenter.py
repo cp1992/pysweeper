@@ -1,11 +1,10 @@
 from utils import flatten
 
-from Tile import Tile
 from TileService import TileService
 from TilesService import TilesService
 
 
-class GamePresenter():
+class GamePresenter:
 
     # constants
     size = 10
@@ -115,7 +114,7 @@ class GamePresenter():
     # if bombs are nearby set the tile image and return false
     # otherwise tile is empty, check if tile not visited and return True
     def check_tile(self, tile, tiles, visited_tiles):
-        if tile == None or tile.bomb:
+        if tile is None or tile.bomb:
             return False
 
         count = self.tile_service.get_adjacent_bomb_count(tile, tiles)
@@ -131,9 +130,9 @@ class GamePresenter():
     ## Listeners ##
 
     def tile_clicked(self, x, y):
-        if (not self.disable_input):
+        if not self.disable_input:
             tile = self.tiles[x][y]
-            if (tile.bomb):
+            if tile.bomb:
                 self.lose_game(tile, self.tiles)
             else:
                 count = self.tile_service.get_adjacent_bomb_count(
@@ -146,7 +145,7 @@ class GamePresenter():
                     tile.unrevealed = False
                     # visit nearby tiles, and set their image if they have adjacent bombs
                     # if the tile is empty, add to emptyTiles list
-                    # iterate through list, with same logic (set thir image, get empty tiles)
+                    # iterate through list, with same logic (set their image, get empty tiles)
                     visited_tiles = []
                     empty_tiles = self.check_adjacent_tiles(
                         tile, self.tiles, visited_tiles)
