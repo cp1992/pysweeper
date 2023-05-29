@@ -10,14 +10,6 @@ class TilesService:
             if tile.unrevealed:
                 count += 1
         return count
-
-    # TODO: remove
-    def get_bomb_tiles_count(self, tiles):
-        count = 0
-        for tile in flatten(tiles):
-            if (tile.bomb):
-                count += 1
-        return count
     
     def generate_bomb_tiles(self, tiles, bomb_count):
         bomb_tiles = []
