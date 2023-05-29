@@ -1,11 +1,12 @@
-# TODO: Would like to split game into Model-View-Presenter
+# Uses MVP Architecture
 # Model
-#   - Tile: stores all information/functionality for tile
+#   - Tile
+#   - TileService
+#   - TilesService
 # View
-#   - main: initial creation of UI, setups root
 #   - GameView
 # Presenter
-#   - GamePresenter: stores game state model, modifies UI
+#   - GamePresenter
 
 from GameView import GameView
 from GamePresenter import GamePresenter

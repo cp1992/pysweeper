@@ -60,6 +60,13 @@ class GamePresenter():
     def reset_game(self):
         self.bomb_count = 0
 
+        # reset tiles
+        for tile in flatten(self.tiles):
+            tile.reset()
+            self.bomb_count += tile.bomb
+
+        self.disable_input = False
+
     # visit nearby tiles and set count on each
     # if nearby tile is an empty tile, and tile has not been visited, return it
     def check_adjacent_tiles(self, tile, tiles, visited_tiles=[]):
@@ -154,10 +161,3 @@ class GamePresenter():
     def new_game_clicked(self):
         self.game_view.hide_game_status()
         self.reset_game()
-
-        # reset tiles
-        for tile in flatten(self.tiles):
-            tile.reset()
-            self.bomb_count += tile.bomb
-
-        self.disable_input = False
