@@ -22,6 +22,7 @@ class GamePresenter:
 
     def __create_ui(self):
         self.game_view.create_window()
+        self.game_view.create_menu(self.difficulty_changed)
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
         self.game_view.create_game_status_frame(
@@ -29,7 +30,7 @@ class GamePresenter:
 
     def start_game(self):
         self.disable_input = False
-        self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
         self.game_view.root.mainloop()
 
     def win_game(self):
@@ -63,7 +64,7 @@ class GamePresenter:
             tile.reset()
 
         # regenerate bombs
-        self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
 
         # re-enable input
         self.disable_input = False
@@ -162,3 +163,15 @@ class GamePresenter:
     def new_game_clicked(self):
         self.game_view.hide_game_status()
         self.reset_game()
+
+    def difficulty_changed(self, size, bomb_count):
+        print("TODO")
+        print(f"size = {size}, bomb_count = {bomb_count}")
+        self.size = size
+        self.bomb_count = bomb_count
+        # TODO: clean this up
+        self.game_view.destroy_board()
+        self.tiles = self.game_view.create_board(
+            self.size, self.tile_clicked, self.tile_right_clicked)
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
+        self.game_view.set_bomb_count(bomb_count)
