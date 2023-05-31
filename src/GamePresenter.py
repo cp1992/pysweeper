@@ -5,13 +5,18 @@ from TilesService import TilesService
 
 
 class GamePresenter:
-
     # constants
-    size = 10
+    difficulties = {
+        'easy': {'size': 10, 'bombs': 12},
+        'medium': {'size': 15, 'bombs': 40},
+        'hard': {'size': 25, 'bombs': 99}
+    }
 
-    # game logic
+    # defaults
+    size = difficulties["easy"]["size"]
+    bomb_count = difficulties["easy"]["bombs"]
+
     tiles = []
-    bomb_count = 12  # 12% of tiles are bombs with size = 10
     disable_input = False
 
     def __init__(self, game_view):
@@ -22,6 +27,7 @@ class GamePresenter:
 
     def __create_ui(self):
         self.game_view.create_window()
+        self.game_view.create_menu(self.difficulty_changed)
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
         self.game_view.create_game_status_frame(
@@ -29,8 +35,8 @@ class GamePresenter:
 
     def start_game(self):
         self.disable_input = False
-        self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
-        self.game_view.root.mainloop()
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
+        self.game_view.window.mainloop()
 
     def win_game(self):
         self.disable_input = True
@@ -48,12 +54,6 @@ class GamePresenter:
                 tile.set_image("assets/tileBomb.png")
 
     def check_for_win_condition(self, tiles):
-        # get number of bombs
-        # check number of unrevealed tiles
-        # if unrevealed tiles == bombs
-        # then win
-        print(
-            f"Bomb count => {self.bomb_count}, unrevealed tiles => {self.tiles_service.get_unrevealed_tiles_count(tiles)}")
         if self.bomb_count == self.tiles_service.get_unrevealed_tiles_count(tiles):
             self.win_game()
 
@@ -63,7 +63,7 @@ class GamePresenter:
             tile.reset()
 
         # regenerate bombs
-        self.tiles_service.generate_bomb_tiles(self.tiles, self.bomb_count)
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
 
         # re-enable input
         self.disable_input = False
@@ -162,3 +162,13 @@ class GamePresenter:
     def new_game_clicked(self):
         self.game_view.hide_game_status()
         self.reset_game()
+
+    def difficulty_changed(self, difficulty):
+        self.size = self.difficulties[difficulty]["size"]
+        self.bomb_count = self.difficulties[difficulty]["bombs"]
+
+        self.game_view.destroy_tiles(self.tiles)
+        self.tiles = self.game_view.create_board(
+            self.size, self.tile_clicked, self.tile_right_clicked)
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
+        self.game_view.set_bomb_count(self.bomb_count)

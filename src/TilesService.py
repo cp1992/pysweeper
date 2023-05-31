@@ -12,11 +12,11 @@ class TilesService:
                 count += 1
         return count
 
-    def generate_bomb_tiles(self, tiles, bomb_count):
+    def generate_bomb_tiles(self, tiles, size, bomb_count):
         bomb_tiles = []
         while len(bomb_tiles) < bomb_count:
-            x = random.randint(0, 9)
-            y = random.randint(0, 9)
+            x = random.randint(0, size - 1)
+            y = random.randint(0, size - 1)
             bomb_tile = tiles[x][y]
             if bomb_tile not in bomb_tiles:
                 bomb_tile.bomb = True
