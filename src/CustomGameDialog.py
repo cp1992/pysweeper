@@ -47,7 +47,8 @@ class CustomGameDialog:
         except ValueError:
             self.error.config(text="Please enter valid values")
 
-    def validate(self, size, bomb_count, error_widget):
+    @staticmethod
+    def validate(size, bomb_count, error_widget):
         if size == 0:
             error_widget.config(text="Size must have value")
             return False
