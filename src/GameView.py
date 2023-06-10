@@ -5,6 +5,7 @@ from tkinter import Menu
 from utils import flatten
 
 from Tile import Tile
+from CustomGameDialog import CustomGameDialog
 
 
 class GameView:
@@ -31,13 +32,17 @@ class GameView:
         self.root = ttk.Frame(self.window)
         self.root.place(relx=.5, rely=.5, anchor="center")
 
-    def create_menu(self, change_difficulty_clicked_listener):
+    def create_menu(self, change_difficulty_clicked_listener, custom_game_listener, game_size, bomb_count):
         menubar = Menu(self.window)
         self.window.config(menu=menubar)
         difficulty_menu = Menu(menubar)
         difficulty_menu.add_command(label="Easy", command=lambda: change_difficulty_clicked_listener("easy"))
         difficulty_menu.add_command(label="Medium", command=lambda: change_difficulty_clicked_listener("medium"))
         difficulty_menu.add_command(label="Hard", command=lambda: change_difficulty_clicked_listener("hard"))
+        difficulty_menu.add_separator()
+        difficulty_menu.add_command(label="Custom Game",
+                                    command=lambda: self.show_custom_game_dialog(custom_game_listener, game_size,
+                                                                                 bomb_count))
         menubar.add_cascade(label="Difficulty", menu=difficulty_menu)
 
     # create board/tiles
@@ -96,3 +101,6 @@ class GameView:
 
     def set_bomb_count(self, bomb_count):
         self.bomb_count_text.config(text=f"Bombs: {bomb_count}")
+
+    def show_custom_game_dialog(self, listener, game_size, bomb_count):
+        dialog = CustomGameDialog(self.window, listener, game_size, bomb_count)
