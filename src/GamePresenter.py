@@ -27,7 +27,7 @@ class GamePresenter:
 
     def __create_ui(self):
         self.game_view.create_window()
-        self.game_view.create_menu(self.difficulty_changed)
+        self.game_view.create_menu(self.difficulty_changed, self.set_custom_game, self.size, self.bomb_count)
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
         self.game_view.create_game_status_frame(
@@ -166,6 +166,16 @@ class GamePresenter:
     def difficulty_changed(self, difficulty):
         self.size = self.difficulties[difficulty]["size"]
         self.bomb_count = self.difficulties[difficulty]["bombs"]
+
+        self.game_view.destroy_tiles(self.tiles)
+        self.tiles = self.game_view.create_board(
+            self.size, self.tile_clicked, self.tile_right_clicked)
+        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
+        self.game_view.set_bomb_count(self.bomb_count)
+
+    def set_custom_game(self, size, bomb_count):
+        self.size = size
+        self.bomb_count = bomb_count
 
         self.game_view.destroy_tiles(self.tiles)
         self.tiles = self.game_view.create_board(
