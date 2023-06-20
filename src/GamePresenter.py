@@ -1,7 +1,7 @@
 from utils import flatten
 
-from TileService import TileService
-from TilesService import TilesService
+import tile_service
+import tiles_service
 
 
 class GamePresenter:
@@ -21,8 +21,6 @@ class GamePresenter:
 
     def __init__(self, game_view):
         self.game_view = game_view
-        self.tiles_service = TilesService()
-        self.tile_service = TileService()
         self.__create_ui()
 
     def __create_ui(self):
@@ -35,12 +33,12 @@ class GamePresenter:
 
     def start_game(self):
         self.disable_input = False
-        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
+        tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
         self.game_view.window.mainloop()
 
     def win_game(self):
         self.disable_input = True
-        self.game_view.show_game_status('Won game!')
+        self.game_view.show_game_status("Won game!")
 
     def lose_game(self, clicked_tile, tiles):
         self.disable_input = True
@@ -54,7 +52,7 @@ class GamePresenter:
                 tile.set_image("assets/tileBomb.png")
 
     def check_for_win_condition(self, tiles):
-        if self.bomb_count == self.tiles_service.get_unrevealed_tiles_count(tiles):
+        if self.bomb_count == tiles_service.get_unrevealed_tiles_count(tiles):
             self.win_game()
 
     def reset_game(self):
@@ -63,46 +61,46 @@ class GamePresenter:
             tile.reset()
 
         # regenerate bombs
-        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
+        tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
 
         # re-enable input
         self.disable_input = False
 
     # visit nearby tiles and set count on each
     # if nearby tile is an empty tile, and tile has not been visited, return it
-    def check_adjacent_tiles(self, tile, tiles, visited_tiles=[]):
+    def check_adjacent_tiles(self, tile, tiles, visited_tiles):
 
         empty_tiles = []
 
-        tile_above_left = self.tile_service.get_tile_above_left(tile, tiles)
+        tile_above_left = tile_service.get_tile_above_left(tile, tiles)
         if self.check_tile(tile_above_left, tiles, visited_tiles):
             empty_tiles.append(tile_above_left)
 
-        tile_above = self.tile_service.get_tile_above(tile, tiles)
+        tile_above = tile_service.get_tile_above(tile, tiles)
         if self.check_tile(tile_above, tiles, visited_tiles):
             empty_tiles.append(tile_above)
 
-        tile_above_right = self.tile_service.get_tile_above_right(tile, tiles)
+        tile_above_right = tile_service.get_tile_above_right(tile, tiles)
         if self.check_tile(tile_above_right, tiles, visited_tiles):
             empty_tiles.append(tile_above_right)
 
-        tile_right = self.tile_service.get_tile_right(tile, tiles)
+        tile_right = tile_service.get_tile_right(tile, tiles)
         if self.check_tile(tile_right, tiles, visited_tiles):
             empty_tiles.append(tile_right)
 
-        tile_below_right = self.tile_service.get_tile_below_right(tile, tiles)
+        tile_below_right = tile_service.get_tile_below_right(tile, tiles)
         if self.check_tile(tile_below_right, tiles, visited_tiles):
             empty_tiles.append(tile_below_right)
 
-        tile_below = self.tile_service.get_tile_below(tile, tiles)
+        tile_below = tile_service.get_tile_below(tile, tiles)
         if self.check_tile(tile_below, tiles, visited_tiles):
             empty_tiles.append(tile_below)
 
-        tile_below_left = self.tile_service.get_tile_below_left(tile, tiles)
+        tile_below_left = tile_service.get_tile_below_left(tile, tiles)
         if self.check_tile(tile_below_left, tiles, visited_tiles):
             empty_tiles.append(tile_below)
 
-        tile_left = self.tile_service.get_tile_left(tile, tiles)
+        tile_left = tile_service.get_tile_left(tile, tiles)
         if self.check_tile(tile_left, tiles, visited_tiles):
             empty_tiles.append(tile_left)
 
@@ -117,7 +115,7 @@ class GamePresenter:
         if tile is None or tile.bomb:
             return False
 
-        count = self.tile_service.get_adjacent_bomb_count(tile, tiles)
+        count = tile_service.get_adjacent_bomb_count(tile, tiles)
         if count == 0:
             tile.set_image("assets/tileSafe.png")
             tile.unrevealed = False
@@ -135,7 +133,7 @@ class GamePresenter:
             if tile.bomb:
                 self.lose_game(tile, self.tiles)
             else:
-                count = self.tile_service.get_adjacent_bomb_count(
+                count = tile_service.get_adjacent_bomb_count(
                     tile, self.tiles)
                 if count > 0:
                     tile.set_image(f"assets/tile{count}.png")
@@ -170,7 +168,7 @@ class GamePresenter:
         self.game_view.destroy_tiles(self.tiles)
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
-        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
+        tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
         self.game_view.set_bomb_count(self.bomb_count)
 
     def set_custom_game(self, size, bomb_count):
@@ -180,5 +178,5 @@ class GamePresenter:
         self.game_view.destroy_tiles(self.tiles)
         self.tiles = self.game_view.create_board(
             self.size, self.tile_clicked, self.tile_right_clicked)
-        self.tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
+        tiles_service.generate_bomb_tiles(self.tiles, self.size, self.bomb_count)
         self.game_view.set_bomb_count(self.bomb_count)

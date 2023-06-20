@@ -9,10 +9,6 @@ from CustomGameDialog import CustomGameDialog
 
 
 class GameView:
-    # constants
-    window_width = 1200
-    window_height = 900
-
     # widgets
     window = None
     root = None
@@ -103,4 +99,4 @@ class GameView:
         self.bomb_count_text.config(text=f"Bombs: {bomb_count}")
 
     def show_custom_game_dialog(self, listener, game_size, bomb_count):
-        dialog = CustomGameDialog(self.window, listener, game_size, bomb_count)
+        CustomGameDialog(self.window, listener, game_size, bomb_count)

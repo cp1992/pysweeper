@@ -1,8 +1,8 @@
 # Uses MVP Architecture
 # Model
 #   - Tile
-#   - TileService
-#   - TilesService
+#   - tile_service
+#   - tiles_service
 # View
 #   - GameView
 # Presenter
